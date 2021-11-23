@@ -1,3 +1,14 @@
+
+pip install cookiecutter
+cookiecutter gh:ffreemt/cookiecutter-poetry
+
+poetry publish --build
+or
+poetry build && poetry publish
+
+---
+Condensed to lines above
+
 cdto pypi
 
 cookiecut cookiecutter-pypi-project
