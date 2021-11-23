@@ -1,0 +1,27 @@
+{
+    "name": "gpt3_api",
+    "version": "0.1.0",
+    "description": "description",
+    "main": "index.js",
+    "repository": "git@github.com:ffreemt/gpt3-api.git",
+    "author": "ffreemt",
+    "license": "MIT",
+    "dependencies": {
+        "npm-run-all": "^4.1.5"
+    },
+    "scripts": {
+        "start": "pyright && pytest && yarn style",
+        "test": "nodemon -w tests -w gpt3_api -x pytest tests",
+        "pyright": "nodemon -w gpt3_api -w .venv -e .py -x pyright gpt3_api tests",
+        "pytest": "nodemon -w tests -w gpt3_api -e .py -x pytest tests gpt3_api",
+        "style": "nodemon -w gpt3_api -w tests -x \"black tests gpt3_api && python -m flake8\"",
+        "docstyle": "nodemon -w gpt3_api -w tests -x pydocstyle --convention=google tests gpt3_api",
+        "pylint": "nodemon -w gpt3_api -e .py -x pylint gpt3_api",
+        "test:gpt3_api": "nodemon -w tests -e .py -x pytest -k gpt3_api tests",
+        "publish": "poetry build && poetry publish",
+        "black": "black tests gpt3_api",
+        "flake8": "flake8 tests gpt3_api",
+        "pep257": "pep257 tests gpt3_api",
+        "final": "run-s pep257 black flake8 pytest"
+    }
+}
