@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "gpt3_api"
+name = "gpt3-api"
 version = "0.1.0"
 description = "pack_name descr "
 authors = ["ffreemt"]
@@ -9,19 +9,26 @@ repository = "https://github.com/ffreemt/gpt3-api"
 include = ["LICENSE"]
 
 [tool.poetry.dependencies]
-python = ">=3.7.3,<4.0"
+python = ">=3.7.1,<4.0"
 logzero = "^1.7.0"
+PyInquirer = "^1.0.3"
+pydantic = "^1.8.2"
+openai = "^0.11.0"
+python-dotenv = "^0.19.2"
 
 [tool.poe.executor]
 type = "poetry"
 
 [tool.poe.tasks]
+memo = "echo poe test"
 test = "pytest tests"
 build = "poetry build"
 _publish = "poetry publish"
 release = ["test", "build", "_publish"]
-lint = { cmd = "pylint gpt3_api" }
+style = { cmd = "flake8 gpt3_api" }
+docstyle = { cmd = "pydocstyle gpt3_api" }
 format = "black tests gpt3_api"
+lint = { cmd = "pylint gpt3_api" }
 tunnel = {cmd ="ssh -CN ip_or_hostname_defined_in_hosts -L 9091:127.0.0.1:9091"}
 
 [tool.poetry.dev-dependencies]
