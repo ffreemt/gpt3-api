@@ -1,4 +1,4 @@
-"""Classify texts to multiple classes.
+r"""Classify texts to multiple classes.
 
 https://beta.openai.com/docs/api-reference/searches 200 labels
 https://beta.openai.com/docs/guides/classifications
@@ -44,6 +44,10 @@ roberta
 172	0.49987271428108215
 
 # ---
+https://beta.openai.com/docs/api-reference/classifications
+
+https://beta.openai.com/docs/guides/classifications
+
 # https://beta.openai.com/examples/default-classification
 
 import os
@@ -103,6 +107,76 @@ openai.Classification.create(
   query = "Transportation, Technology",  # 3
   labels=[str(elm) for elm in [0, 1, 2, 3, 4, 5]],
 )
+"""
+from typing import List, Optional, Tuple
+
+import os
+import openai
+from logzero import logger
+
+from gpt3_api.config import Settings
+
+config = Settings()
+
+_ = os.environ.get("LOGLEVEL", 20)
+if isinstance(_, str):
+    dict_ = zip(["debug", "info", "warning", "error", "critical"], range(10, 60, 10))
+    _ = dict(dict_).get(_.lower(), _)
+try:
+    _ = int(_)
+except ValueError:
+    _ = 20
+logger.loglevel = _
 
 
-# """
+# fmt: off
+def clas(
+        query: str,
+        examples: List[Tuple[str, str]],
+        labels: Optional[List[str]] = None,
+        search_model: str = "ada",
+        model: str = "curie",
+        temperature: float = 0.15,
+        max_examples: Optional[int] = None,
+        return_prompt: bool = False,
+) -> str:
+    # fmt: on
+    """Classify query according examples.
+
+    Args
+        query: text to classify
+        labels: equal to [str(elm) for elm in range(len(examples))] if None
+    """
+    # if labels is None: labels = [str(elm) for elm in range(len(examples))]
+    if max_examples is None:
+        max_examples = len(examples)
+
+    if len(examples) > 200:
+        logger.warning("Official docs say it only works for up to 200: # of your examples %s > 200", len(examples))
+        logger.info("We proceed nevertheless...")
+
+    try:
+        if labels is not None:
+            _ = openai.Classification.create(
+                query=query,
+                labels=labels,
+                examples=examples,
+                search_model="ada",
+                model="curie",
+                temperature=temperature,
+            )
+        else:
+            _ = openai.Classification.create(
+                query=query,
+                # labels=labels,
+                examples=examples,
+                search_model="ada",
+                model="curie",
+                temperature=temperature,
+            )
+        res = _.get("label", "unk")
+    except Exception as exc:
+        logger.error(exc)
+        res = str(exc)
+
+    return res

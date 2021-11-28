@@ -21,6 +21,7 @@ from logzero import logger
 import openai
 
 from gpt3_api.config import Settings
+
 config = Settings()
 openai.api_key = config.api_key
 
@@ -35,7 +36,12 @@ def assemble_prompt(
     examples: List[Tuple[str, str]] = [("", "")],
 ) -> str:
     """Assemble prompt."""
-    _ = "".join([prefixes[0] + elm[0] + suffixes[0] + prefixes[1] + elm[1] + suffixes[1] for elm in examples])
+    _ = "".join(
+        [
+            prefixes[0] + elm[0] + suffixes[0] + prefixes[1] + elm[1] + suffixes[1]
+            for elm in examples
+        ]
+    )
     _ = preamble + suffixes[1] + _ + prefixes[0] + query + suffixes[0] + prefixes[1]
 
     return _
