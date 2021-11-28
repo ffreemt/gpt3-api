@@ -1,4 +1,4 @@
-"""Translate text to English.
+r"""Translate text to English.
 
 https://beta.openai.com/playground/p/default-translate
 import os
@@ -80,7 +80,7 @@ def zh2en(
         query: str,
         # engine: str = "davinci-instruct-beta-v3"
         engine: str = "davinci",
-        temperature: float = 0.14,
+        temperature: float = 0.11,
         max_tokens: int = 150,
         top_p: int = 1,
         frequency_penalty: float = 0,  # -2..2, positive penalty
@@ -88,7 +88,7 @@ def zh2en(
         stop: List[str] = ["###", "\n\n"],
 ) -> str:
     # fmt: on
-    """Translate Chinese to English via gpt2.
+    r"""Translate Chinese to English via gpt2.
 
     Args
         query: text to translate, newlines (\n) will
@@ -146,7 +146,7 @@ def zh2en(
     return res.strip()
 
 
-def main():
+def main():  # noqa
     if sys.argv.__len__() > 1:
         query = " ".join(sys.argv[1:])
     else:
