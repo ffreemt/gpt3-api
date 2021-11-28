@@ -3,7 +3,7 @@
 
 WIP ... gpt3-api descr
 
-## **not ready** Install it
+## **not ready** -- Install it
 
 ```shell
 **not ready** pip install gpt3_api

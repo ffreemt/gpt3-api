@@ -43,6 +43,8 @@ response = openai.Completion.create(
 response.choices[0].text
 
 """
+from typing import List
+
 import os
 import sys
 import openai
@@ -63,7 +65,7 @@ except ValueError:
     _ = 20
 logzero.loglevel(_)
 
-OPENAI_API_KEY = dotenv.dotenv_values().get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY") or dotenv.dotenv_values().get("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     logger.warning("OPENAI_API_KEY is not set, you can set in .env or system environ")
 else:
@@ -71,28 +73,37 @@ else:
     logger.debug("OPENAI_API_KEY: %s", _)
     openai.api_key = OPENAI_API_KEY
 
+
 # fmt: off
 def zh2en(
         query: str,
         # engine: str = "davinci-instruct-beta-v3"
         engine: str = "davinci",
-        temperature: float = 0.25,
+        temperature: float = 0.14,
         max_tokens: int = 150,
         top_p: int = 1,
-        frequency_penalty: float = 0,
+        frequency_penalty: float = 0,  # -2..2, positive penalty
         presence_penalty: float = 0,
+        stop: List[str] = ["###", "\n\n"],
 ) -> str:
     # fmt: on
-    """Translate English to Chinese via gpt2.
+    """Translate Chinese to English via gpt2.
 
     Args
-        query: text to translate, newline (\n) will
-            be removed by opanai, may not contain ##
-        others: refer to openai.Completion.create
+        query: text to translate, newlines (\n) will
+            be removed by opanai; occurrences of ## in query
+            cause problems. Hence, ## is also removed.
+        others: refer to openai.Completion.create docs,
             engine "davinci-instruct-beta-v3" is better but collects data
-            higher temperature, more dynamic?
+            higher temperature, more dynamic (variants)
+
+    Returns
+        translated English, may occasionally return blank,
+        a simple retry or retry with different temperature
+        often solves the problem.
+
     """
-    query = str(query)
+    query = str(query).replace("##", "")
     prompt = dedent(f"""\
         Chinese: 我
         English: Me
@@ -116,7 +127,7 @@ def zh2en(
             top_p=top_p,
             frequency_penalty=frequency_penalty,
             presence_penalty=presence_penalty,
-            stop=["###"],
+            stop=stop,
             # stop=["##"],
             # stop="\n\n",
         )
@@ -138,7 +149,7 @@ def main():
     if sys.argv.__len__() > 1:
         query = " ".join(sys.argv[1:])
     else:
-        query = "这是测试"
+        query = "世界卫生组织26日将最新报告的新冠病毒变异毒株B.1.1.529列为“需要关注”的变异毒株，并以希腊字母“奥密克戎”（Ο）命名。目前，这一变异毒株已在三大洲被发现，多国采取入境限制措施。"
 
     logger.info("%s -> %s", query, zh2en(query))
 
