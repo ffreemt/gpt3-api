@@ -65,7 +65,8 @@ except ValueError:
     _ = 20
 logzero.loglevel(_)
 
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY") or dotenv.dotenv_values().get("OPENAI_API_KEY")
+_ = "OPENAI_API_KEY"
+OPENAI_API_KEY = os.environ.get(_) or dotenv.dotenv_values().get(_)
 if not OPENAI_API_KEY:
     logger.warning("OPENAI_API_KEY is not set, you can set in .env or system environ")
 else:
