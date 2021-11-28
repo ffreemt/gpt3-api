@@ -15,6 +15,7 @@ PyInquirer = "^1.0.3"
 pydantic = "^1.8.2"
 openai = "^0.11.0"
 python-dotenv = "^0.19.2"
+environs = "^9.3.5"
 
 [tool.poe.executor]
 type = "poetry"

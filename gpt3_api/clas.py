@@ -1,7 +1,10 @@
 """Classify texts to multiple classes.
 
 https://beta.openai.com/docs/api-reference/searches 200 labels
+https://beta.openai.com/docs/guides/classifications
+Up to 200 labeled examples
 
+---
 nlpcloud 0-201
 https://nlpcloud.io/home/playground/classification
 John Doe is a Go Developer at Google. He has been working there for 10 years and has been awarded employee of the year.
@@ -40,4 +43,66 @@ roberta
 162	0.5155285000801086
 172	0.49987271428108215
 
-"""
+# ---
+# https://beta.openai.com/examples/default-classification
+
+import os
+import openai
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+prompt = '''The following is a list of companies and the categories they fall into\n\nFacebook: Social media, Technology\nLinkedIn: Social media, Technology, Enterprise, Careers\nUber: Transportation, Technology, Marketplace\nUnilever: Conglomerate, Consumer Goods\nMcdonalds: Food, Fast Food, Logistics, Restaurants\nFedEx:"'''
+
+prompt = '''The following is a list of keywords and their category labels
+Social media, Technology: zero
+Social media, Technology, Enterprise, Careers: one
+Conglomerate, Consumer Goods: three
+Transportation, Technology, Marketplace: two
+Food, Fast Food, Logistics, Restaurants: four
+Logistics, Transportation: five
+Food, Fast Food, Logistics, Restaurants: four
+Food, Fast Food, Logistics, Restaurants: '''
+
+# response =
+openai.Completion.create(
+  engine="davinci",
+  prompt=prompt,
+  temperature=0,
+  max_tokens=6,
+  top_p=1.0,
+  # top_p=.9,
+  frequency_penalty=0.0,
+  presence_penalty=0.0,
+  stop=["\n"]
+)
+
+import os
+import openai
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+openai.Classification.create(
+  search_model="ada",
+  model="curie",
+  examples=[
+    # ["A happy moment", "Positive"],
+    # ["I am sad.", "Negative"],
+    # ["I am feeling awesome", "Positive"]
+    ("Social media, Technology", '0'),
+    ("Social media, Technology, Enterprise, Careers", '1'),
+    ("Conglomerate, Consumer Goods", '2'),
+    ("Transportation, Technology, Marketplace", '3'),
+    ("Food, Fast Food, Logistics, Restaurants", '4'),
+    ("Logistics, Transportation", '5'),
+    ("Food, Fast Food, Logistics, Restaurants", '4'),
+  ],
+  # query="It is a raining day :(",
+  # labels=["Positive", "Negative", "Neutral"],
+
+  # query = "Consumer Goods, Social media",
+  # query = "Food, Fast Food, Logistics, Restaurants The following",
+  query = "Transportation, Technology",  # 3
+  labels=[str(elm) for elm in [0, 1, 2, 3, 4, 5]],
+)
+
+
+# """
