@@ -47,9 +47,10 @@ from typing import List
 
 import os
 import sys
-import openai
+import re
 from textwrap import dedent
 import dotenv
+import openai
 
 import logzero
 from logzero import logger
@@ -92,19 +93,30 @@ def zh2en(
 
     Args
         query: text to translate, newlines (\n) will
-            be removed by opanai; occurrences of ## in query
-            cause problems. Hence, ## is also removed.
+            be removed; occurrences of ## in query
+            cause problems. Hence, ## is replacceed with #-.
         others: refer to openai.Completion.create docs,
             engine "davinci-instruct-beta-v3" is better but collects data
-            higher temperature, more dynamic (variants)
+            higher temperature, more dynamic (more variants)
 
     Returns
         translated English, may occasionally return blank,
         a simple retry or retry with different temperature
         often solves the problem.
-
     """
-    query = str(query).replace("##", "")
+    # query = str(query).replace("##", "")
+
+    # replace ##, ###,..., with #- #--, ...
+    # (credit to Konge for this regex trick)
+    # query = re.sub(r"(?<=(#))\1", "-", str(query))
+
+    # credit to all netpals
+    query = re.sub(r"(?<=#)#", "-", str(query))
+
+    # remove all \n
+    # query = query.repalce("\n", " ", query)
+    query = re.sub("\n+", " ", query)
+
     prompt = dedent(f"""\
         Chinese: 我
         English: Me

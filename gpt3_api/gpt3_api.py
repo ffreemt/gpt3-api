@@ -29,22 +29,27 @@ logzero.loglevel(10)
 
 
 def assemble_prompt(
-    query: str,
+    query: str = "",
     preamble: str = "",
     prefixes: Tuple[str, str] = ("Human: ", "AI: "),
     suffixes: Tuple[str, str] = ("\n", "\n\n"),
-    examples: List[Tuple[str, str]] = [("", "")],
+    # examples: List[Tuple[str, str]] = [("", "")],
+    examples: List[Tuple[str, str]] = None,
 ) -> str:
     """Assemble prompt."""
-    _ = "".join(
-        [
-            prefixes[0] + elm[0] + suffixes[0] + prefixes[1] + elm[1] + suffixes[1]
-            for elm in examples
-        ]
-    )
+    if examples:
+        _ = "".join(
+            [
+                prefixes[0] + elm[0] + suffixes[0] + prefixes[1] + elm[1] + suffixes[1]
+                for elm in examples
+            ]
+        )
+    else:
+        _ = ""
     _ = preamble + suffixes[1] + _ + prefixes[0] + query + suffixes[0] + prefixes[1]
 
-    return _
+    # remove spaces in both ends
+    return _.strip()
 
 
 # fmt: off
@@ -138,7 +143,8 @@ def gpt3_api(
         suffixes: Tuple[str, str] = ("\n", "\n\n"),
         chat_mode: bool = False,
         preamble: str = "",
-        examples: List[Tuple[str, str]] = [("", "")],
+        # examples: List[Tuple[str, str]] = [("", "")],
+        examples: List[Tuple[str, str]] = None,
         deq_len: int = 100,
         # proxy: str = None,
         # proxy: Optional[str] = None,
@@ -184,6 +190,12 @@ def gpt3_api(
             stop=stop,
             # **kwargs,
         )
+    try:
+        query = str(query)
+    except Exception:
+        query = ""
+    if query.strip():
+        logger.warning(" query (%s) is empty. Make sure this is really what you want.", query)
 
     # initialize deq and store logged data as function attribute.
     # can be useful in chatbot
@@ -191,8 +203,10 @@ def gpt3_api(
         _ = gpt3_api.deq
     except AttributeError:
         # only run on first call
-        gpt3_api.deq = deque(examples, deq_len)
-        # else: gpt3_api.deq = deque([], deq_len)
+        if examples:
+            gpt3_api.deq = deque(examples, deq_len)
+        else:
+            gpt3_api.deq = deque([], deq_len)
 
     if chat_mode:  # use past log (deq), eg chat
         # _ = f"{suffix0}{prefix1}".join(gpt3_api.deq)
