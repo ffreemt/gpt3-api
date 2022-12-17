@@ -26,7 +26,9 @@ def test_clas1():
     assert clas(examples[0][0], examples) == examples[0][1]
 
     # 22/33 25/33 = ~75%, 11s, 1/3 per classification
-    assert sum(clas(elm[0], examples) == elm[1] for elm in examples) > len(examples) // 2
+    assert (
+        sum(clas(elm[0], examples) == elm[1] for elm in examples) > len(examples) // 2
+    )
 
 
 _ = r'''

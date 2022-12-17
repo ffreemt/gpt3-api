@@ -24,17 +24,11 @@ import openai
 
 import logzero
 from logzero import logger
+from .gtp3_api import assemble_prompt
+from set_loglevel import set_loglevel
 
-_ = os.environ.get("LOGLEVEL", 20)
-if isinstance(_, str):
-    dict_ = zip(["debug", "info", "warning", "error", "critical"], range(10, 60, 10))
-    _ = dict(dict_).get(_.lower(), _)
+logzero.loglevel(set_loglevel())
 
-try:
-    _ = int(_)
-except ValueError:
-    _ = 20
-logzero.loglevel(_)
 
 _ = "OPENAI_API_KEY"
 OPENAI_API_KEY = os.environ.get(_) or dotenv.dotenv_values().get(_)

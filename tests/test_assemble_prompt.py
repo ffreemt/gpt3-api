@@ -7,7 +7,7 @@ def test_assemble_prompt1():
 
     # ['', '', 'Human: ', 'AI:', '', 'Human: query', 'AI:']
     _ = assemble_prompt("query").splitlines()
-    assert 'Human: query' in _
+    assert "Human: query" in _
 
 
 def test_assemble_prompt2():
@@ -15,8 +15,9 @@ def test_assemble_prompt2():
 
     # ['', '', 'Human: ', 'AI:', '', 'Human: query', 'AI:']
     _ = assemble_prompt("query").splitlines()
-    assert sum(map(lambda x: 'human' in x.lower(), _)) == 2
-    assert sum(map(lambda x: 'ai' in x.lower(), _)) == 2
+    assert sum(map(lambda x: "human" in x.lower(), _)) == 2
+    assert sum(map(lambda x: "ai" in x.lower(), _)) == 2
+
 
 _ = """
 examples = [("Test text", 'test')]

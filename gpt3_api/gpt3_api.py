@@ -11,21 +11,22 @@ https://beta.openai.com/docs/engines/instruct-series-beta
 """
 # pylint: disable=too-many-arguments, too-many-locals
 
-from typing import List, Tuple  # Deque,
-
 from collections import deque
+from typing import List, Tuple  # Deque,
 
 # from itertools import chain
 import logzero
-from logzero import logger
 import openai
+from logzero import logger
+from set_loglevel import set_loglevel
 
 from gpt3_api.config import Settings
 
 config = Settings()
 openai.api_key = config.api_key
 
-logzero.loglevel(10)
+# logzero.loglevel(10)
+logzero.loglevel(set_loglevel())
 
 
 def assemble_prompt(
@@ -194,7 +195,7 @@ def gpt3_api(
         query = str(query)
     except Exception:
         query = ""
-    if query.strip():
+    if not query.strip():
         logger.warning(" query (%s) is empty. Make sure this is really what you want.", query)
 
     # initialize deq and store logged data as function attribute.

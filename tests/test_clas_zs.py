@@ -39,12 +39,12 @@ def test_clas_zs1():
     assert sum(elm[0] == elm[1].strip() for elm in res) > 20
 
 
-_ = """
+_ = '''
 def test_clas_zs2():
     """Test clas_zs with tests/wu_ch3_en.txt.
-    
+
     maximum context length is 2049 tokens
-    
+
     6916 in your prompt, 32 for the completion
     """
     filename = "tests/wu_ch3_en.txt"
@@ -75,4 +75,4 @@ def test_clas_zs2():
         _ = clas_zs(elm[0], examples)
         res.append((elm[1], _))
     assert sum(elm[0] == elm[1].strip() for elm in res) > 20
-# """
+# '''

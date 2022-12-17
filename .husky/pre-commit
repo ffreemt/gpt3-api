@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# npm test
+echo " running from gpt3-api\.husky\pre-commit... "
+# npm test
+isort --profile black gpt3_api
+black gpt3_api

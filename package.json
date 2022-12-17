@@ -6,9 +6,6 @@
     "repository": "git@github.com:ffreemt/gpt3-api.git",
     "author": "ffreemt",
     "license": "MIT",
-    "dependencies": {
-        "npm-run-all": "^4.1.5"
-    },
     "scripts": {
         "start": "pyright && pytest && yarn style",
         "test": "nodemon -w tests -w gpt3_api -x pytest tests",
@@ -22,6 +19,11 @@
         "black": "black tests gpt3_api",
         "flake8": "flake8 tests gpt3_api",
         "pep257": "pep257 tests gpt3_api",
-        "final": "run-s pep257 black flake8 pytest"
+        "final": "run-s pep257 black flake8 pytest",
+        "prepare": "husky install"
+    },
+    "devDependencies": {
+        "husky": "^8.0.0",
+        "npm-run-all": "^4.1.5"
     }
 }
